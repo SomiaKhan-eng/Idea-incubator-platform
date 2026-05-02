@@ -101,7 +101,7 @@ Most core features are working. Some features are still being refined.
 
 ## 📃 Software Design and Architecture Project Documentation.pdf
 
-veiw full documentation: https://drive.google.com/file/d/1X9ee-AcDQzt3J3KHyj2T985UUKz1b4wa/view?usp=drive_link
+[View full documentation](https://drive.google.com/file/d/1X9ee-AcDQzt3J3KHyj2T985UUKz1b4wa/view?usp=drive_link)
 
 ---
 
