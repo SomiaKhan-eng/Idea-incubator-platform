@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💡 IdeaSpark — Idea Incubator Platform
+# IdeaSpark — Idea Incubator Platform
 
 ### A full-stack platform for pitching, growing, and connecting project ideas
 
@@ -13,7 +13,7 @@
 
 ---
 
-## 💡 About
+## About
 
 IdeaSpark is a platform built for students and creators who have ideas but need a space to develop, pitch, and connect them with the right people — a mini startup incubator with funding tracking, team formation, and voting built in.
 
@@ -21,7 +21,7 @@ The platform supports the full idea lifecycle: pitch → upvote/downvote → tea
 
 ---
 
-## ✨ Features
+## Features
 
 - **Idea Dashboard** — submit, view, and rank ideas by a popularity score (feedback + upvotes + funding ratio)
 - **Voting System** — upvote / downvote on ideas, with live vote counts
@@ -34,7 +34,7 @@ The platform supports the full idea lifecycle: pitch → upvote/downvote → tea
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -46,13 +46,13 @@ The platform supports the full idea lifecycle: pitch → upvote/downvote → tea
 
 ---
 
-## 🗄️ Database
+## Database
 
 Relational MySQL schema (`IdeaSpark.Db`) covering users, ideas, investments, votes, teams, team members, team requests/invitations, and session context — with foreign key constraints enforcing referential integrity across the platform.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ```bash
 # Clone the repository
@@ -75,11 +75,11 @@ node server.js
 
 Then open `http://localhost:8081` in your browser.
 
-> ⚠️ Never commit your real `.env` file — it's already excluded via `.gitignore`. Use `.env.example` as the template.
+> Never commit your real `.env` file — it's already excluded via `.gitignore`. Use `.env.example` as the template.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Idea-incubator-platform/
@@ -99,12 +99,12 @@ Idea-incubator-platform/
 
 ---
 
-## 🚧 Status
+## Status
 
 Core features (ideas, voting, investments, teams, analytics) are working end to end. AI Mentor currently returns a static response — full Gemini integration is the next milestone.
 
 ---
 
-## 👩‍💻 Author
+## Author
 
 **Somia Khan** — [GitHub](https://github.com/SomiaKhan-eng)
