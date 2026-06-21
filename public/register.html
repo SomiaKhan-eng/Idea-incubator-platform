@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join IdeaSpark</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 🎨 1. The Moving Gradient Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #70544c, #ec77a4, #5d818e, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 🌫️ 2. The Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85); /* Slightly more opaque for forms */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root" class="w-full max-w-md p-4"></div>
+
+    <script type="text/babel" src="register-app.js"></script>
+
+</body>
+</html>

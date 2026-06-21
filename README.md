@@ -1,26 +1,36 @@
+<div align="center">
+
 # 💡 IdeaSpark — Idea Incubator Platform
 
-> A full-stack platform for pitching, growing, and connecting project ideas — powered by Google Gemini AI.
+### A full-stack platform for pitching, growing, and connecting project ideas
+
+![Node.js](https://img.shields.io/badge/Node.js-6E40C9?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-6E40C9?style=for-the-badge&logo=express&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-6E40C9?style=for-the-badge&logo=mysql&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-6E40C9?style=for-the-badge&logo=javascript&logoColor=white)
+
+</div>
 
 ---
 
 ## 💡 About
 
-IdeaSpark is a platform built for students and creators who have ideas but need a space to develop, pitch, and connect them with the right people. Think of it as a mini startup incubator — with an AI mentor built in.
+IdeaSpark is a platform built for students and creators who have ideas but need a space to develop, pitch, and connect them with the right people — a mini startup incubator with funding tracking, team formation, and voting built in.
 
-The platform supports the full idea lifecycle: from initial pitch to team building, marketplace listing, and analytics tracking.
+The platform supports the full idea lifecycle: pitch → upvote/downvote → team formation via invitations → investment tracking → analytics.
 
 ---
 
 ## ✨ Features
 
-- **Idea Dashboard** — submit, manage and track your ideas in one place
-- **AI Mentor** — Google Gemini AI powered mentor that gives feedback and guidance on your ideas
-- **Marketplace** — browse and discover ideas from other users
-- **Team Management** — build and manage teams around ideas
-- **Analytics** — track idea engagement and growth metrics
-- **Authentication** — secure login and registration with session management
-- **User Profiles** — personalised profiles for idea owners
+- **Idea Dashboard** — submit, view, and rank ideas by a popularity score (feedback + upvotes + funding ratio)
+- **Voting System** — upvote / downvote on ideas, with live vote counts
+- **Investment Tracking** — log mock investments and track funding progress toward each idea's goal
+- **Team Formation** — send/accept/reject team invitations, view team members per idea
+- **Request Inbox** — owners can view and respond to incoming team requests
+- **Analytics Dashboard** — total capital raised, total ideas, total users, trending idea, category breakdown
+- **Authentication** — registration and role-based login (Creator / Investor / Mentor / Admin)
+- **AI Mentor (in progress)** — `@google/generative-ai` is wired into the project; the current `/ask-ai` route returns a fixed guidance message while full Gemini-powered responses are being built out
 
 ---
 
@@ -29,22 +39,16 @@ The platform supports the full idea lifecycle: from initial pitch to team buildi
 | Layer | Technology |
 |---|---|
 | Frontend | HTML · CSS · JavaScript |
-| Backend | Node.js · Express.js |
+| Backend | Node.js · Express |
 | Database | MySQL |
-| AI Integration | Google Gemini AI |
-| Auth | bcrypt · express-session |
+| Auth | bcrypt |
+| Planned AI | Google Gemini API |
 
 ---
 
 ## 🗄️ Database
 
-The platform uses a relational MySQL database handling users, ideas, teams, and marketplace listings with full CRUD operations and session-based authentication.
-
----
-
-## 🤖 AI Integration
-
-The AI Mentor feature uses Google's Gemini API to provide contextual feedback on submitted ideas — covering feasibility, market potential, and next steps. It responds based on the idea's description and category.
+Relational MySQL schema (`IdeaSpark.Db`) covering users, ideas, investments, votes, teams, team members, team requests/invitations, and session context — with foreign key constraints enforcing referential integrity across the platform.
 
 ---
 
@@ -53,29 +57,32 @@ The AI Mentor feature uses Google's Gemini API to provide contextual feedback on
 ```bash
 # Clone the repository
 git clone https://github.com/SomiaKhan-eng/Idea-incubator-platform.git
-
-# Navigate to project
-cd Idea-incubator-platform/IdeaSpark-project
+cd Idea-incubator-platform
 
 # Install dependencies
 npm install
 
 # Set up your environment variables
-# Create a .env file with:
-# DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, GEMINI_API_KEY, SESSION_SECRET
+cp .env.example .env
+# then edit .env with your own MySQL credentials
 
-# Run the server
+# Import the database schema
+# Run IdeaSpark.Db in MySQL Workbench or CLI
+
+# Start the server
 node server.js
 ```
 
-Then open `http://localhost:3000` in your browser.
+Then open `http://localhost:8081` in your browser.
+
+> ⚠️ Never commit your real `.env` file — it's already excluded via `.gitignore`. Use `.env.example` as the template.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-IdeaSpark-project/
+Idea-incubator-platform/
 ├── public/
 │   ├── index.html          # Landing page
 │   ├── dashboard.html      # Idea dashboard
@@ -84,8 +91,9 @@ IdeaSpark-project/
 │   ├── analytics.html      # Analytics view
 │   ├── team.html           # Team management
 │   └── login / register    # Auth pages
-├── server.js               # Main Express server
-├── IdeaSpark.Db            # Database schema
+├── server.js                # Main Express server
+├── IdeaSpark.Db              # Database schema
+├── .env.example              # Environment variable template
 └── package.json
 ```
 
@@ -93,18 +101,9 @@ IdeaSpark-project/
 
 ## 🚧 Status
 
-Most core features are working. Some features are still being refined.
+Core features (ideas, voting, investments, teams, analytics) are working end to end. AI Mentor currently returns a static response — full Gemini integration is the next milestone.
 
 ---
-
----
-
-## 📃 Software Design and Architecture Project Documentation.pdf
-
-[View full documentation](https://drive.google.com/file/d/1X9ee-AcDQzt3J3KHyj2T985UUKz1b4wa/view?usp=drive_link)
-
----
-
 
 ## 👩‍💻 Author
 

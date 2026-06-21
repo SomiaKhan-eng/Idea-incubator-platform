@@ -1,0 +1,266 @@
+-- 🚀 IdeaSpark: Database Schema
+-- Project: AR-Powered Idea Incubator Platform
+
+-- 1. Create and Select Database
+DROP DATABASE IF EXISTS IdeaSparkDB;
+CREATE DATABASE IdeaSparkDB;
+USE IdeaSparkDB;
+
+-- ==========================================
+-- 2. TABLE CREATION
+-- ==========================================
+
+-- Table: USERS (Core Identity)
+-- Handles Creators, Investors, and Mentors
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('Creator', 'Investor', 'Mentor', 'Admin') DEFAULT 'Creator',
+    bio TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table: IDEAS (The Core Content)
+-- Stores the startup concepts
+CREATE TABLE Ideas (
+    idea_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT, -- The Creator
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    category ENUM('Tech', 'Art', 'Business', 'Social', 'Health') DEFAULT 'Tech',
+    funding_goal DECIMAL(15, 2) DEFAULT 0.00,
+    current_funding DECIMAL(15, 2) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+-- Table: INVESTMENTS (The Money)
+-- Tracks who invested in what idea
+CREATE TABLE Investments (
+    investment_id INT AUTO_INCREMENT PRIMARY KEY,
+    investor_id INT, -- Must be a user with role 'Investor'
+    idea_id INT,
+    amount DECIMAL(15, 2) NOT NULL,
+    investment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (investor_id) REFERENCES Users(user_id),
+    FOREIGN KEY (idea_id) REFERENCES Ideas(idea_id) ON DELETE CASCADE
+);
+
+-- Table: MENTORSHIP_SESSIONS (The AI & Human Help)
+-- Tracks interactions between Mentors/AI and Creators
+CREATE TABLE MentorshipSessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    mentor_id INT, -- Can be a human mentor or NULL for AI
+    creator_id INT,
+    session_type ENUM('AI_Chat', 'Human_Video', 'Code_Review') DEFAULT 'AI_Chat',
+    notes TEXT,
+    session_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (creator_id) REFERENCES Users(user_id)
+);
+-- 1. Create Teams Table [cite: 43, 215]
+CREATE TABLE Teams (
+    team_id INT AUTO_INCREMENT PRIMARY KEY,
+    team_name VARCHAR(100) NOT NULL,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    visibility ENUM('Public', 'Private') DEFAULT 'Public' 
+);
+CREATE TABLE Votes (
+    vote_id INT AUTO_INCREMENT PRIMARY KEY,
+    idea_id INT NOT NULL,
+    user_id INT NOT NULL,
+    vote_type ENUM('Upvote', 'Downvote') NOT NULL,
+    UNIQUE KEY unique_vote (idea_id, user_id), -- Aik banda aik hi baar vote kar sake
+    FOREIGN KEY (idea_id) REFERENCES Ideas(idea_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+CREATE TABLE TeamRequests (
+    request_id INT PRIMARY KEY AUTO_INCREMENT,
+    idea_id INT,
+    user_id INT, -- Jo join karna chahta hai (Collaborator)
+    status ENUM('Pending', 'Accepted', 'Rejected') DEFAULT 'Pending',
+    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idea_id) REFERENCES Ideas(idea_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+-- 2. Create Many-to-Many Membership Table [cite: 49, 112]
+CREATE TABLE Team_Members (
+    team_id INT,
+    user_id INT,
+    role_in_team VARCHAR(50) DEFAULT 'Member',
+    PRIMARY KEY (team_id, user_id),
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+-- 3. Create SessionContext Table for AR Adaptation [cite: 78, 81]
+CREATE TABLE SessionContext (
+    context_id INT AUTO_INCREMENT PRIMARY KEY,
+    idea_id INT, -- Linking context to the Idea/Workspace [cite: 84]
+    lighting_level DECIMAL(5,2),
+    noise_level DECIMAL(5,2),
+    activity_status VARCHAR(50),
+    adaptation_action VARCHAR(255),
+    captured_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idea_id) REFERENCES Ideas(idea_id) ON DELETE CASCADE
+);
+CREATE TABLE Feedback (
+    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+    idea_id INT,
+    user_id INT,
+    comment_text TEXT,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idea_id) REFERENCES Ideas(idea_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+
+-- Create some users
+INSERT INTO Users (username, email, password_hash, role) VALUES 
+('KashafDev', 'kashaf@spark.com', 'hashed_pass_123', 'Creator'),
+('ElonMusk', 'elon@tesla.com', 'hashed_pass_456', 'Investor'),
+('SparkyAI', 'ai@spark.com', 'system_pass', 'Mentor');
+
+-- Create an idea
+INSERT INTO Ideas (user_id, title, description, category, funding_goal) VALUES 
+(1, 'NeuroLink VR', 'A mind-reading headset for gaming.', 'Tech', 50000.00);
+
+-- Make an investment
+INSERT INTO Investments (investor_id, idea_id, amount) VALUES 
+(2, 1, 10000.00);
+
+-- Check data
+SELECT * FROM Users;
+SELECT * FROM Ideas;
+
+SET SQL_SAFE_UPDATES = 0;
+
+
+UPDATE Ideas SET funding_goal = 50000 WHERE funding_goal = 0;
+
+ALTER TABLE Ideas ADD COLUMN tags VARCHAR(255); -- Multivalued tags [cite: 41];
+ALTER TABLE Ideas ADD COLUMN status VARCHAR(50) DEFAULT 'Active';
+
+ALTER TABLE users ADD COLUMN bio TEXT;
+
+ALTER TABLE Ideas 
+ADD COLUMN session_state ENUM('Active', 'Inactive') DEFAULT 'Inactive',
+ADD COLUMN environment_type VARCHAR(50) DEFAULT 'AR';
+
+-- Adding columns required by your documentation 
+ALTER TABLE users ADD COLUMN bio TEXT;
+ALTER TABLE users ADD COLUMN skills VARCHAR(255);
+
+
+-- 1. Fix the Role list to include Collaborator
+ALTER TABLE Users 
+MODIFY COLUMN role ENUM('Creator', 'Investor', 'Mentor', 'Admin', 'Collaborator') DEFAULT 'Creator';
+
+
+-- 3. Ensure your password column matches your code logic
+-- If your code uses 'password', rename it:
+ALTER TABLE Users CHANGE COLUMN password_hash password VARCHAR(255) NOT NULL;
+
+SELECT * FROM Users;
+
+ALTER TABLE Users CHANGE COLUMN password_hash password VARCHAR(255) NOT NULL;
+
+
+-- Backend query check
+-- '?' ki jagah koi bhi Idea ID dalo (e.g., 1)
+SELECT f.*, u.username 
+FROM Feedback f 
+JOIN Users u ON f.user_id = u.user_id 
+WHERE f.idea_id = 1;
+
+
+-- 1. Remove the old potentially broken link
+ALTER TABLE Feedback DROP FOREIGN KEY feedback_ibfk_2;
+
+-- 2. Create the new correct link to 'Users' (Capital U)
+ALTER TABLE Feedback 
+ADD CONSTRAINT fk_feedback_user 
+FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE;
+
+-- 3. Check if it's working
+SELECT f.*, u.username 
+FROM Feedback f 
+JOIN Users u ON f.user_id = u.user_id;
+
+SELECT * FROM Users;
+
+SELECT * FROM Ideas;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE Ideas SET user_id = 1 WHERE user_id IS NULL;
+
+SELECT * FROM Ideas ORDER BY idea_id DESC LIMIT 1;
+
+DESCRIBE Ideas;
+SELECT * FROM Ideas;
+INSERT INTO Ideas (title, description, category, user_id) VALUES ('Test Idea', 'Testing buttons', 'Tech', 12);
+
+SELECT * FROM Users;
+
+
+SELECT * FROM Ideas ORDER BY idea_id DESC LIMIT 1;
+
+
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM Ideas WHERE user_id IS NULL OR title LIKE '%test%';
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+-- Delete feedback with very short or junk text
+DELETE FROM Feedback WHERE comment_text LIKE '%test%' OR LENGTH(comment_text) < 6;
+
+ALTER TABLE Users 
+MODIFY COLUMN role ENUM('Creator', 'Investor', 'Collaborator') NOT NULL;
+
+INSERT INTO Users (username, email, password, role, skills, bio) 
+VALUES ('Test User', 'test@test.com', '123', 'Collaborator', 'Testing', 'Bio');
+
+
+SELECT * FROM Users;
+
+
+SET SQL_SAFE_UPDATES = 0;
+-- Jo purana data kharab hai, usse 'Creator' par set kar do
+UPDATE Users SET role = 'Creator' WHERE role NOT IN ('Creator', 'Investor', 'Collaborator') OR role IS NULL;
+
+SELECT current_funding FROM Ideas;
+
+DESCRIBE Ideas;
+
+SELECT * FROM Users;
+USE IdeaSparkDB;
+
+-- 1. Add the missing column
+ SET SQL_SAFE_UPDATES = 0;
+
+-- Delete teams that have no members in the Team_Members table
+DELETE FROM Teams 
+WHERE team_id NOT IN (SELECT DISTINCT team_id FROM Team_Members);
+
+SET SQL_SAFE_UPDATES = 1;
+
+USE IdeaSparkDB;
+
+ALTER TABLE Teams ADD COLUMN creator_id INT;
+
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM Teams WHERE team_id NOT IN (SELECT DISTINCT team_id FROM Team_Members);
+SET SQL_SAFE_UPDATES = 1;
+SELECT * FROM Team_Members WHERE user_id = 1;
+
+CREATE TABLE IF NOT EXISTS Team_Invitations (
+    invitation_id INT AUTO_INCREMENT PRIMARY KEY,
+    team_id INT NOT NULL,
+    invited_user_id INT NOT NULL,
+    status VARCHAR(20) DEFAULT 'Pending', -- 'Pending', 'Accepted', 'Rejected'
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id) ON DELETE CASCADE,
+    FOREIGN KEY (invited_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);

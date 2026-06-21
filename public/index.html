@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdeaSpark - The Future of Incubation</title>
+    
+    <!-- React & Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Icons & Fonts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        html { scroll-behavior: smooth; }
+        section { scroll-margin-top: 100px; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+        }
+
+        /* ✨ AR Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+        .ar-object {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function LandingPage() {
+            
+            // --- DEMO STATES ---
+            const [isDark, setIsDark] = React.useState(false);
+            const [isNoisy, setIsNoisy] = React.useState(false);
+            const [arObjects, setArObjects] = React.useState([]);
+
+            // Navigation Handlers
+            const handleGetStarted = () => window.location.href = 'register.html';
+            const handleLogin = () => window.location.href = 'login.html';
+            
+            const handleCardClick = (link) => {
+                if (link) window.location.href = link;
+                else { alert("This feature is available after Login! 🔒"); window.location.href = 'login.html'; }
+            };
+
+            // --- AR DEMO LOGIC ---
+            const addStickyNote = () => {
+                const colors = ['bg-yellow-200', 'bg-pink-200', 'bg-blue-200', 'bg-green-200'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                const newObj = { 
+                    id: Date.now(), 
+                    type: 'note', 
+                    color: randomColor, 
+                    x: Math.random() * 60 + 10, // Random position
+                    y: Math.random() * 60 + 10 
+                };
+                setArObjects([...arObjects, newObj]);
+            };
+
+            const add3DModel = () => {
+                const newObj = { 
+                    id: Date.now(), 
+                    type: 'model', 
+                    x: Math.random() * 60 + 10, 
+                    y: Math.random() * 60 + 10 
+                };
+                setArObjects([...arObjects, newObj]);
+            };
+
+            const features = [
+                { title: 'AR Workspaces', icon: '👓', desc: 'Collaborate in immersive 3D environments with virtual sticky notes.', link: 'dashboard.html' },
+                { title: 'AI Mentor Assistant', icon: '🤖', desc: 'Get real-time suggestions from our intelligent AI mentor Sparky.', link: 'ai-mentor.html' },
+                { title: 'Team Formation', icon: '🤝', desc: 'Find collaborators and work together seamlessly.', link: 'team.html' },
+                { title: 'Investor Ecosystem', icon: '📈', desc: 'Connect with investors and secure funding proposals.', link: 'marketplace.html' },
+                { title: 'Idea Marketplace', icon: '🛒', desc: 'Showcase and discover innovative ideas.', link: 'marketplace.html' },
+                { title: 'Analytics Tracking', icon: '📊', desc: 'Track your progress with detailed success metrics.', link: 'analytics.html' },
+                { title: 'Secure Access', icon: '🛡️', desc: 'Role-based permissions ensure your data remains private.', link: null },
+                { title: 'Context-Aware', icon: '🧠', desc: 'Adaptive system that adjusts to your environment.', link: '#demo' } // Points to demo now!
+            ];
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    
+                    {/* NAVBAR */}
+                    <nav className="glass-nav fixed w-full z-50 px-8 py-4 flex justify-between items-center">
+                        <div className="text-2xl font-bold text-indigo-600 flex items-center gap-2 tracking-tighter">
+                            <span>⚡</span> IdeaSpark
+                        </div>
+                        <div className="hidden md:flex gap-8 text-gray-600 font-medium">
+                            <a href="#features" className="hover:text-indigo-600 transition">Features</a>
+                            <a href="#demo" className="hover:text-indigo-600 transition">Live Demo</a>
+                            <a href="#how-it-works" className="hover:text-indigo-600 transition">How It Works</a>
+                            <a href="marketplace.html" className="hover:text-indigo-600 transition">Marketplace</a>
+                        </div>
+                        <div className="flex gap-4">
+                            <button onClick={handleLogin} className="text-indigo-600 font-semibold hover:text-indigo-800 transition">Login</button>
+                            <button onClick={handleGetStarted} className="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-indigo-700 transition transform hover:scale-105">Get Started</button>
+                        </div>
+                    </nav>
+
+                    {/* HERO */}
+                    <header className="pt-40 pb-20 px-6 text-center max-w-5xl mx-auto">
+                        <span className="inline-block py-1 px-3 rounded-full bg-white/50 border border-white/50 text-indigo-600 text-sm font-bold mb-6 animate-pulse">✨ The Future of Incubation</span>
+                        <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight drop-shadow-sm mb-6">
+                            Transform Ideas into Reality with <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-800">AR & AI</span>
+                        </h1>
+                        <p className="text-xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+                            The next-generation idea incubator powered by <b>Augmented Reality workspaces</b>, <b>AI mentorship</b>, and context-aware tools.
+                        </p>
+                        <div className="flex flex-col md:flex-row justify-center gap-4">
+                            <button onClick={handleGetStarted} className="px-8 py-4 bg-white text-indigo-600 text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1">Start Building Ideas</button>
+                            <button onClick={() => window.location.href='#demo'} className="px-8 py-4 glass-card text-gray-800 text-lg font-bold rounded-full hover:bg-white/80 transition">Try Live Demo</button>
+                        </div>
+                    </header>
+
+                    {/* 🎮 INTERACTIVE DEMO SECTION */}
+                    <section id="demo" className="py-20 px-6">
+                        <div className="max-w-6xl mx-auto">
+                            <div className="text-center mb-12">
+                                <h2 className="text-4xl font-bold text-white mb-4">Experience the Future</h2>
+                                <p className="text-white/80 text-lg">Interact with our Context-Aware and AR simulation engines right now.</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                
+                                {/* 1. CONTEXT AWARE SIMULATOR */}
+                                <div className={`glass-card p-8 rounded-3xl transition-colors duration-500 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white/60'}`}>
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>🧠 Context Awareness</h3>
+                                        <div className="flex gap-2">
+                                            <span className={`text-xs px-2 py-1 rounded ${isDark ? 'bg-indigo-500 text-white' : 'bg-gray-200'}`}>
+                                                {isDark ? '🌙 Night Mode' : '☀️ Day Mode'}
+                                            </span>
+                                            {isNoisy && <span className="text-xs px-2 py-1 rounded bg-red-500 text-white animate-pulse">🔊 Noisy</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 mb-8">
+                                        <div className="flex items-center justify-between p-4 bg-white/20 rounded-xl border border-white/30">
+                                            <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Simulate Low Light</span>
+                                            <button 
+                                                onClick={() => setIsDark(!isDark)}
+                                                className={`w-12 h-6 rounded-full p-1 transition-colors ${isDark ? 'bg-indigo-500' : 'bg-gray-300'}`}
+                                            >
+                                                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${isDark ? 'translate-x-6' : ''}`}></div>
+                                            </button>
+                                        </div>
+
+                                        <div className="flex items-center justify-between p-4 bg-white/20 rounded-xl border border-white/30">
+                                            <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Simulate High Noise</span>
+                                            <button 
+                                                onClick={() => setIsNoisy(!isNoisy)}
+                                                className={`w-12 h-6 rounded-full p-1 transition-colors ${isNoisy ? 'bg-red-500' : 'bg-gray-300'}`}
+                                            >
+                                                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${isNoisy ? 'translate-x-6' : ''}`}></div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* SIMULATED INTERFACE */}
+                                    <div className={`p-6 rounded-xl border-2 border-dashed ${isDark ? 'border-gray-600 bg-black/40' : 'border-gray-300 bg-white/40'}`}>
+                                        {isNoisy ? (
+                                            <div className="text-center">
+                                                <div className="text-4xl mb-2">💬</div>
+                                                <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Text-Only Mode Activated</h4>
+                                                <p className="text-sm text-gray-500">High background noise detected. Voice features disabled for clarity.</p>
+                                            </div>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="text-4xl mb-2">🎙️</div>
+                                                <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Voice Mode Ready</h4>
+                                                <p className="text-sm text-gray-500">Environment is quiet. You can speak to Sparky now.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* 2. AR WORKSPACE SIMULATOR */}
+                                <div className="glass-card p-8 rounded-3xl relative overflow-hidden">
+                                    <div className="flex justify-between items-center mb-6 relative z-10">
+                                        <h3 className="text-2xl font-bold text-gray-800">👓 AR Workspace</h3>
+                                        <div className="flex gap-2">
+                                            <button onClick={addStickyNote} className="px-3 py-1 bg-yellow-300 text-yellow-900 text-xs font-bold rounded-full shadow hover:bg-yellow-400 transition">+ Sticky</button>
+                                            <button onClick={add3DModel} className="px-3 py-1 bg-indigo-500 text-white text-xs font-bold rounded-full shadow hover:bg-indigo-600 transition">+ 3D Model</button>
+                                        </div>
+                                    </div>
+
+                                    {/* AR VIEWPORT */}
+                                    <div className="relative w-full h-64 bg-cover bg-center rounded-2xl border border-white/50 shadow-inner overflow-hidden" style={{backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80')"}}>
+                                        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
+                                        <div className="absolute top-2 left-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded backdrop-blur-sm">🔴 LIVE AR VIEW</div>
+                                        
+                                        {/* RENDER OBJECTS */}
+                                        {arObjects.map(obj => (
+                                            <div 
+                                                key={obj.id}
+                                                className={`absolute ar-object shadow-xl ${obj.type === 'note' ? `${obj.color} text-gray-800 p-2 w-16 h-16 text-[8px] font-handwriting` : 'text-4xl'}`}
+                                                style={{ left: `${obj.x}%`, top: `${obj.y}%` }}
+                                            >
+                                                {obj.type === 'note' ? 'New Idea...' : '🧊'}
+                                            </div>
+                                        ))}
+
+                                        {arObjects.length === 0 && (
+                                            <div className="absolute inset-0 flex items-center justify-center text-white/80 font-bold text-lg drop-shadow-md">
+                                                Tap buttons to place objects
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-4 text-center">In the full app, these objects float in your real room using camera sensors.</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* FEATURES GRID */}
+                    <section id="features" className="py-20 px-6">
+                        <div className="max-w-6xl mx-auto">
+                            <div className="text-center mb-16">
+                                <h2 className="text-4xl font-bold text-white mb-4">Powerful Features for Innovation</h2>
+                                <p className="text-white/80 text-lg">Click a card to explore the feature!</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {features.map((feature, i) => (
+                                    <div key={i} onClick={() => handleCardClick(feature.link)} className="glass-card p-8 rounded-3xl group">
+                                        <div className="text-4xl mb-4 bg-indigo-100 w-16 h-16 flex items-center justify-center rounded-2xl shadow-sm group-hover:scale-110 transition-transform">{feature.icon}</div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{feature.title}</h3>
+                                        <p className="text-gray-600 text-sm leading-relaxed">{feature.desc}</p>
+                                        <div className="mt-4 text-indigo-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">Try it <span>→</span></div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ⚙️ HOW IT WORKS (Re-added!) */}
+                    <section id="how-it-works" className="py-20 px-6 bg-white/90 backdrop-blur-xl">
+                        <div className="max-w-5xl mx-auto">
+                            <h2 className="text-4xl font-bold text-center text-gray-800 mb-16">How It Works</h2>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                {[
+                                    { step: '01', title: 'Register & Create Profile', desc: 'Sign up and choose your role: Creator, Collaborator, Investor, or Mentor.', color: 'bg-indigo-100 text-indigo-600' },
+                                    { step: '02', title: 'Launch AR Workspace', desc: 'Create or join shared AR workspaces. Use virtual tools to brainstorm and sketch.', color: 'bg-green-100 text-green-600' },
+                                    { step: '03', title: 'Collaborate & Get AI', desc: 'Work with your team in real-time. Receive AI-powered suggestions throughout your journey.', color: 'bg-pink-100 text-pink-600' },
+                                    { step: '04', title: 'Connect with Investors', desc: 'Publish your idea to the marketplace. Get discovered by investors and receive funding.', color: 'bg-orange-100 text-orange-600' }
+                                ].map((item, i) => (
+                                    <div key={i} className="relative">
+                                        <div className={`text-6xl font-bold opacity-20 mb-4 ${item.color.split(' ')[1]}`}>{item.step}</div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
+                                        <p className="text-gray-600 text-sm">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="text-center mt-16">
+                                <button onClick={handleGetStarted} className="px-10 py-4 bg-indigo-600 text-white text-lg font-bold rounded-full shadow-lg hover:bg-indigo-700 transition">
+                                    Get Started Now
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* FOOTER */}
+                    <footer className="glass-nav mt-auto py-12 px-6">
+                        <div className="max-w-6xl mx-auto text-center text-gray-500 text-sm">Empowering innovation through AR, AI, and collaboration. © IdeaSpark 2025</div>
+                    </footer>
+
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<LandingPage />);
+    </script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
